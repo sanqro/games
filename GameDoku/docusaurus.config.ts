@@ -3,8 +3,8 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Dokumentation',
+  tagline: 'Dokumentation für die Gamesite',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -58,7 +58,7 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     navbar: {
-      title: 'My Site',
+      title: 'GameDoku',
       logo: {
         alt: 'My Site Logo',
         src: 'img/logo.svg',
@@ -68,11 +68,10 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Dokumentation',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/sanqro/games',
           label: 'GitHub',
           position: 'right',
         },
@@ -85,43 +84,26 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Dokumentation',
               to: '/docs/intro',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Links',
           items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
             {
               label: 'GitHub',
+              href: 'https://github.com/sanqro/games',
+            },
+            {
+              label: 'GitHub - docusaurus',
               href: 'https://github.com/facebook/docusaurus',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} GameDoku, Egloff-Casadei, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,

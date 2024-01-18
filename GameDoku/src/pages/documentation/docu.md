@@ -1,5 +1,5 @@
 ---
-title: Dokumentation
+title: DocOverview
 description: Overview of the documentation
 hide_table_of_contents: false
 sidebar_position: 1
@@ -16,14 +16,14 @@ sidebar_position: 1
 
 ## Inhaltsverzeichnis
 
-[Informieren](/docs/iperka/informieren)
+Informieren
 
-[Planen](/docs/iperka/planen)
+Planen
 
-[Entscheiden](/docs/iperka/entscheiden)
+Entscheiden
 
-[Realisieren](/docs/iperka/realisieren)
+Realisieren
 
-[Kontrollieren](/docs/iperka/kontrollieren)
+Kontrollieren
 
-[Auswerten](/docs/iperka/auswerten)
+Auswerten
