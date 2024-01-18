@@ -6,11 +6,10 @@ declare global {
 			export const PUBLIC_SUPABASE_ANON_KEY: string;
 			export const PUBLIC_SUPABASE_URL: string;
 		}
-		// interface Error {}
-		// interface Locals {}
-		// interface PageData {}
-		// interface PageState {}
-		// interface Platform {}
+		interface Locals {
+			sb: TypedSupabaseClient
+			session: Session | null
+		}
 	}
 }
 
