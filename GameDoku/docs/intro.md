@@ -16,14 +16,9 @@ sidebar_position: 1
 
 ## Inhaltsverzeichnis
 
-[Informieren](/docs/iperka/informieren)
-
-[Planen](/docs/iperka/planen)
-
-[Entscheiden](/docs/iperka/entscheiden)
-
-[Realisieren](/docs/iperka/realisieren)
-
-[Kontrollieren](/docs/iperka/kontrollieren)
-
-[Auswerten](/docs/iperka/auswerten)
+-   [Informieren](/docs/iperka/informieren)
+-   [Planen](/docs/iperka/planen)
+-   [Entscheiden](/docs/iperka/entscheiden)
+-   [Realisieren](/docs/iperka/realisieren)
+-   [Kontrollieren](/docs/iperka/kontrollieren)
+-   [Auswerten](/docs/iperka/auswerten)
