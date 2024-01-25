@@ -1,7 +1,7 @@
 export type gameState = {
     playerX: string;
     playerO: string;
-    currentPlayer: 'X' | 'O' | 'over';
+    currentPlayer: 'X' | 'O' | ''; // '' means game is over
     gameGrid: gameTyle[];
 };
 

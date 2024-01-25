@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { gameState, gameTyle } from '$interfaces';
 
-	const player = 'X';
+	const player: 'X' | 'O' = 'X';
 
 	// mock GameState
-	let gameState: useState<gameState> = {
+	let gameState: gameState = {
 		playerX: 'Player 1',
 		playerO: 'Player 2',
 		currentPlayer: 'X',
@@ -63,15 +63,20 @@
 		];
 
 		let winner: 'X' | 'O' | 'Draw' | undefined = undefined;
-		let filledTiles = 0;
 		possibleWins.forEach((winningCombo) => {
-			filledTiles++;
 			const tile1 = gameState.gameGrid[winningCombo[0]].tileState;
 			const tile2 = gameState.gameGrid[winningCombo[1]].tileState;
 			const tile3 = gameState.gameGrid[winningCombo[2]].tileState;
 
 			if (tile1 === tile2 && tile2 === tile3 && tile1 !== '') {
 				winner = tile1;
+			}
+		});
+
+		let filledTiles = 0;
+		gameState.gameGrid.forEach((tile) => {
+			if (tile.tileState !== '') {
+				filledTiles++;
 			}
 		});
 
