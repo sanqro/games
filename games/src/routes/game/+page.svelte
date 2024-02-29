@@ -48,8 +48,6 @@
 		]
 	};
 
-	gameState.gameGrid.sort((a: gameTyle, b: gameTyle) => a.tileIndex - b.tileIndex);
-
 	const checkForWinner = () => {
 		const possibleWins = [
 			[0, 1, 2], // top row
@@ -88,7 +86,7 @@
 	};
 
 	const buttonClick = (buttonIndex: number) => {
-		if (gameState.currentPlayer === player || true) {
+		if (gameState.gameGrid[buttonIndex].tileState === '') {
 			gameState.gameGrid[buttonIndex].tileState = gameState.currentPlayer;
 			if (gameState.currentPlayer === 'X') {
 				gameState.currentPlayer = 'O';
@@ -105,7 +103,6 @@
 </script>
 
 <div class="container">
-	<h2>You are: {player}</h2>
 	<h2>Current Player: {gameState.currentPlayer}</h2>
 	<div class="gameContainer">
 		<!-- First row -->
@@ -118,7 +115,7 @@
 </div>
 
 <style>
-	.constainer {
+	.container {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
