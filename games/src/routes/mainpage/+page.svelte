@@ -60,7 +60,7 @@
 		if (error) {
 			console.error(error);
 		} else {
-			console.log(data);
+			goto(`/game/${data[0].id}`);
 		}
 	};
 </script>
