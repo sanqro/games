@@ -1,52 +1,56 @@
 <script lang="ts">
+	import type { PageData } from './$types';
+	import { supabase } from '$lib/supabaseClient';
 	import type { gameState, gameTyle } from '$interfaces';
+	import { browser } from '$app/environment';
+	import { onDestroy } from 'svelte';
 
-	const player: 'X' | 'O' = 'X';
-
-	// mock GameState
-	let gameState: gameState = {
-		playerX: 'Player 1',
-		playerO: 'Player 2',
-		currentPlayer: 'X',
-		gameGrid: [
-			{
-				tileIndex: 1,
-				tileState: ''
-			},
-			{
-				tileIndex: 0,
-				tileState: ''
-			},
-			{
-				tileIndex: 6,
-				tileState: ''
-			},
-			{
-				tileIndex: 2,
-				tileState: ''
-			},
-			{
-				tileIndex: 3,
-				tileState: ''
-			},
-			{
-				tileIndex: 4,
-				tileState: ''
-			},
-			{
-				tileIndex: 5,
-				tileState: ''
-			},
-			{
-				tileIndex: 7,
-				tileState: ''
-			},
-			{
-				tileIndex: 8,
-				tileState: ''
-			}
-		]
+	const updateGame = async () => {
+		const { error } = await supabase.from('games').upsert({ id: data.gameId, game: gameState });
 	};
+
+	export let data: PageData;
+	let gameState = data.gameData.game as gameState;
+	gameState.gameGrid.sort((a: gameTyle, b: gameTyle) => a.tileIndex - b.tileIndex);
+
+	let thisPlayer: 'X' | 'O' | null = null;
+	let playername: string | null = null;
+
+	if (browser) {
+		if (gameState.playerX === null) {
+			thisPlayer = 'X';
+			// Mock playername
+			gameState.playerX = 'Player 1';
+			playername = gameState.playerX;
+			updateGame();
+		} else if (gameState.playerO === null) {
+			thisPlayer = 'O';
+			// Mock playername
+			gameState.playerO = 'Player 2';
+			playername = gameState.playerX;
+			updateGame();
+		} else {
+			alert('Game is full');
+		}
+	}
+
+	const gameserver = supabase
+		.channel('game')
+		.on(
+			'postgres_changes',
+			{
+				event: 'UPDATE',
+				schema: 'public',
+				table: 'games',
+				filter: 'id=eq.' + data.gameId
+			},
+			(payload) => {
+				console.log(payload.new.game);
+				gameState = payload.new.game;
+				checkForWinner();
+			}
+		)
+		.subscribe();
 
 	const checkForWinner = () => {
 		const possibleWins = [
@@ -86,7 +90,10 @@
 	};
 
 	const buttonClick = (buttonIndex: number) => {
-		if (gameState.gameGrid[buttonIndex].tileState === '') {
+		if (
+			gameState.currentPlayer === thisPlayer &&
+			gameState.gameGrid[buttonIndex].tileState === ''
+		) {
 			gameState.gameGrid[buttonIndex].tileState = gameState.currentPlayer;
 			if (gameState.currentPlayer === 'X') {
 				gameState.currentPlayer = 'O';
@@ -94,15 +101,19 @@
 				gameState.currentPlayer = 'X';
 			}
 
-			const winner = checkForWinner();
-			if (winner !== undefined) {
-				alert(`Winner is ${winner}`);
-			}
+			updateGame();
+			checkForWinner();
 		}
 	};
 </script>
 
+<div>
+	<h1>Game</h1>
+	<p>GameId: {data.gameId}</p>
+</div>
+
 <div class="container">
+	<h2>You are: {thisPlayer}</h2>
 	<h2>Current Player: {gameState.currentPlayer}</h2>
 	<div class="gameContainer">
 		<!-- First row -->
