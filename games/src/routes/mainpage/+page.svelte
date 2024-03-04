@@ -33,39 +33,48 @@
 			gameGrid: [
 				{
 					tileIndex: 1,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 0,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 6,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 2,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 3,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 4,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 5,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 7,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				},
 				{
 					tileIndex: 8,
-					tileState: ''
+					tileState: '',
+					isDisabled: false
 				}
 			]
 		};
@@ -221,19 +230,20 @@
 	.Button {
 		background-color: var(--primary-color);
 		color: var(--background-color1);
+
 		font-size: 1.1rem;
 		width: 20rem;
 		margin: 1rem 0;
 		padding: 1rem 2rem;
 		border: none;
 		border-radius: 0.5rem;
+
 		transition: 0.5s;
 		cursor: pointer;
 	}
 
 	.Button:hover {
 		background-color: var(--secondary-color);
-		color: var(--background-color1);
 	}
 
 	.SessionButton {

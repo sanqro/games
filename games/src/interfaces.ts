@@ -8,4 +8,5 @@ export type gameState = {
 export type gameTyle = {
     tileIndex: number;
     tileState: 'X' | 'O' | '';
+    isDisabled: boolean;
 };

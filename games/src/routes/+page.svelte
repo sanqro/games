@@ -84,12 +84,6 @@
 		padding: 1rem 0;
 	}
 
-	.HeaderText {
-		color: var(--secondary-color);
-		font-size: 1.5rem;
-		padding: 0 1rem;
-	}
-
 	.ContentContainer {
 		display: flex;
 		flex-direction: column;
