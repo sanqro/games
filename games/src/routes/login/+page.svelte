@@ -1,9 +1,20 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { supabaseClient } from '$lib/supabase';
 	import type { Provider } from '@supabase/supabase-js';
 	import type { SubmitFunction } from '@sveltejs/kit';
+
+	export let sessionData: any;
+
+	supabaseClient.auth.getSession().then((session) => {
+		sessionData = session.data;
+
+		if (browser && sessionData.session !== null) {
+			goto('/mainpage');
+		}
+	});
 
 	const signInWithProvider = async (provider: Provider) => {
 		const { data, error } = await supabaseClient.auth.signInWithOAuth({
