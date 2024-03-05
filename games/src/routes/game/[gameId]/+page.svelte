@@ -148,7 +148,7 @@
 
 <main class="Container">
 	<header class="Header">
-		<section class="HeaderText">SomeHeaderText</section>
+		<section class="HeaderText">Tic Tac Toe Online</section>
 		<nav>
 			<button class="HeaderButton" on:click={() => goto('/mainpage')}>Leave Game</button>
 		</nav>

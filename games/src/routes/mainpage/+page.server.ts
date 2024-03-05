@@ -1,6 +1,6 @@
 import type { Actions } from './$types';
 import type { gameState } from '$interfaces';
-import { supabase } from '$lib/supabaseClient';
+import { supabaseClient } from '$lib/supabase';
 
 export const actions = {
 	default: async () => {
@@ -14,45 +14,54 @@ export const actions = {
       gameGrid: [
         {
           tileIndex: 1,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 0,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 6,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 2,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 3,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 4,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 5,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 7,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         },
         {
           tileIndex: 8,
-          tileState: ''
+          tileState: '',
+					isDisabled: false
         }
       ]
     }
 
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('games')
       .insert([newGame])
       .select()
@@ -64,11 +73,3 @@ export const actions = {
     return event;
   },
 } satisfies Actions;
-
-/*const POST: RouteHandler = async (req, res) => {
-  const { page } = req.params;
-
-  const games = await getGames(page);
-
-  res.json(games);
-}*/
