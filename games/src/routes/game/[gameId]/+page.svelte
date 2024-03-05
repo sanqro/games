@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { supabase } from '$lib/supabaseClient';
+	import { supabaseClient } from '$lib/supabase';
 	import type { gameState, gameTyle } from '$interfaces';
 	import { browser } from '$app/environment';
-	import { onDestroy } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	const updateGame = async () => {
-		const { error } = await supabase.from('games').upsert({ id: data.gameId, game: gameState });
+		if (thisPlayer === null) return;
+		const { error } = await supabaseClient
+			.from('games')
+			.upsert({ id: data.gameId, game: gameState });
 	};
 
 	export let data: PageData;
@@ -14,27 +17,36 @@
 	gameState.gameGrid.sort((a: gameTyle, b: gameTyle) => a.tileIndex - b.tileIndex);
 
 	let thisPlayer: 'X' | 'O' | null = null;
-	let playername: string | null = null;
+	export let playername: string | null = null;
 
-	if (browser) {
-		if (gameState.playerX === null) {
-			thisPlayer = 'X';
-			// Mock playername
-			gameState.playerX = 'Player 1';
-			playername = gameState.playerX;
-			updateGame();
-		} else if (gameState.playerO === null) {
-			thisPlayer = 'O';
-			// Mock playername
-			gameState.playerO = 'Player 2';
-			playername = gameState.playerX;
-			updateGame();
+	supabaseClient.auth.getUser().then((user) => {
+		if (user === null || user.error !== null) {
+			playername = 'Guest';
 		} else {
-			alert('Game is full');
+			playername = user.data.user.user_metadata.name;
 		}
-	}
 
-	const gameserver = supabase
+		if (browser) {
+			if (gameState.playerX === null) {
+				thisPlayer = 'X';
+				gameState.playerX = playername;
+				playername = gameState.playerX;
+
+				updateGame();
+			} else if (gameState.playerO === null) {
+				thisPlayer = 'O';
+				gameState.playerO = playername;
+				playername = gameState.playerX;
+				updateGame();
+			} else {
+				gameserver.unsubscribe();
+				alert('Game is full');
+				goto('/mainpage');
+			}
+		}
+	});
+
+	const gameserver = supabaseClient
 		.channel('game')
 		.on(
 			'postgres_changes',
@@ -45,7 +57,6 @@
 				filter: 'id=eq.' + data.gameId
 			},
 			(payload) => {
-				console.log(payload.new.game);
 				gameState = payload.new.game;
 				checkForWinner();
 			}
@@ -86,7 +97,24 @@
 			winner = 'Draw';
 		}
 
-		return winner;
+		if (winner === 'Draw' && browser) {
+			alert('Draw');
+
+			gameserver.unsubscribe();
+		} else if (winner !== undefined && browser) {
+			if (winner !== 'Draw' && winner === 'X') {
+				disableAllButtons();
+				alert(gameState.playerX + ' wins');
+
+				gameserver.unsubscribe();
+			} else {
+				disableAllButtons();
+				alert(gameState.playerO + ' wins');
+
+				gameserver.unsubscribe();
+			}
+			gameserver.unsubscribe();
+		}
 	};
 
 	const buttonClick = (buttonIndex: number) => {
@@ -95,6 +123,7 @@
 			gameState.gameGrid[buttonIndex].tileState === ''
 		) {
 			gameState.gameGrid[buttonIndex].tileState = gameState.currentPlayer;
+			gameState.gameGrid[buttonIndex].isDisabled = true;
 			if (gameState.currentPlayer === 'X') {
 				gameState.currentPlayer = 'O';
 			} else {
@@ -105,43 +134,198 @@
 			checkForWinner();
 		}
 	};
+
+	const disableAllButtons = () => {
+		gameState.gameGrid.forEach((tile) => {
+			tile.isDisabled = true;
+		});
+	};
+
+	const copySessionId = () => {
+		navigator.clipboard.writeText(data.gameId as string);
+	};
 </script>
 
-<div>
-	<h1>Game</h1>
-	<p>GameId: {data.gameId}</p>
-</div>
-
-<div class="container">
-	<h2>You are: {thisPlayer}</h2>
-	<h2>Current Player: {gameState.currentPlayer}</h2>
-	<div class="gameContainer">
-		<!-- First row -->
-		{#each gameState.gameGrid as item, index}
-			<button class="gameGridButton" on:click={() => buttonClick(index)}>
-				{item.tileState}
-			</button>
-		{/each}
+<main class="Container">
+	<header class="Header">
+		<section class="HeaderText">Tic Tac Toe Online</section>
+		<nav>
+			<button class="HeaderButton" on:click={() => goto('/mainpage')}>Leave Game</button>
+		</nav>
+	</header>
+	<div class="ContentContainer">
+		<h2 class="TittleS">You are: {thisPlayer}</h2>
+		{#if thisPlayer === 'X'}
+			<h2 class="TittleS">Enemy: {gameState.playerO}</h2>
+		{:else if thisPlayer === 'O'}
+			<h2 class="TittleS">Enemy: {gameState.playerX}</h2>
+		{/if}
+		<h2 class="TittleS">Current Player: {gameState.currentPlayer}</h2>
+		<div class="GameContainer">
+			<!-- First row -->
+			{#each gameState.gameGrid as item, index}
+				<button
+					class="GameGridButton"
+					disabled={item.isDisabled}
+					on:click={() => buttonClick(index)}
+				>
+					{item.tileState}
+				</button>
+			{/each}
+		</div>
+		<button class="Button" on:click={() => copySessionId()}>Copy Session Id</button>
 	</div>
-</div>
+</main>
 
 <style>
-	.container {
+	@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+
+	:root {
+		--background-color1: #0d1c34;
+		--background-color2: #2a1d39;
+		--primary-color: #3498db;
+		--secondary-color: #ff5f56;
+		--header-color: #0d141f;
+	}
+
+	:global(body) {
+		font-family: 'Passion One', sans-serif;
+		margin: 0;
+		height: 100vh;
+		font-size: 62.5%;
+	}
+
+	.Container {
+		background: linear-gradient(180deg, var(--background-color1) 0%, var(--background-color2) 100%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		height: 100vh;
 	}
 
-	.gameContainer {
+	.Header {
+		background-color: var(--header-color);
+		text-align: center;
+		height: 2rem;
+		width: 100%;
+		font-size: 1.5rem;
+		padding: 1rem 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.HeaderText {
+		color: var(--secondary-color);
+		font-size: 1.5rem;
+		padding: 0 1rem;
+	}
+
+	.HeaderButton {
+		background-color: var(--secondary-color);
+		color: var(--background-color1);
+
+		height: 2rem;
+		font-size: 1.1rem;
+		margin: 0 1rem;
+		padding: 0rem 1.5rem;
+		border: none;
+		border-radius: 0.3rem;
+
+		transition: 0.5s;
+		cursor: pointer;
+	}
+
+	.HeaderButton:hover {
+		background-color: var(--primary-color);
+	}
+
+	.ContentContainer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		flex-grow: 1;
+		text-align: center;
+	}
+
+	.TittleS {
+		color: var(--primary-color);
+		font-size: 3rem;
+		margin: 0.5rem 0;
+	}
+
+	.GameContainer {
 		display: grid;
-		grid-template-columns: 100px 100px 100px;
-		grid-template-rows: 100px 100px 100px;
+		grid-template-columns: repeat(3, 1fr);
+		grid-gap: 10px;
+		margin-top: 20px;
 	}
 
-	.gameGridButton {
-		width: 100px;
-		height: 100px;
-		border: 1px solid black;
-		background-color: white;
+	.GameGridButton {
+		background-color: var(--primary-color);
+		color: var(--background-color1);
+		font-family: 'Passion One', sans-serif;
+
+		font-size: 4rem;
+		width: 6rem;
+		height: 6rem;
+		margin: 0;
+		padding: 1rem;
+		border: none;
+		border-radius: 0.5rem;
+
+		transition:
+			background-color 0.5s,
+			color 0.5s,
+			transform 0.2s;
+		cursor: pointer;
+	}
+
+	.GameGridButton:hover {
+		background-color: var(--secondary-color);
+		color: var(--background-color2);
+		transform: scale(1.15);
+	}
+
+	.Button {
+		background-color: var(--primary-color);
+		color: var(--background-color1);
+
+		font-size: 1.1rem;
+		width: 20rem;
+		margin: 1rem 0;
+		padding: 1rem 2rem;
+		border: none;
+		border-radius: 0.5rem;
+
+		transition: 0.5s;
+		cursor: pointer;
+	}
+
+	.Button:hover {
+		background-color: var(--secondary-color);
+	}
+
+	.Button:active {
+		animation: clickAnimation 0.3s ease-in-out;
+	}
+
+	.GameGridButton:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	@keyframes clickAnimation {
+		0% {
+			background-color: var(--secondary-color);
+		}
+		50% {
+			background-color: var(--background-color2);
+		}
+		100% {
+			background-color: var(--secondary-color);
+		}
 	}
 </style>

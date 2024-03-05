@@ -1,52 +1,66 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { gameState, gameTyle } from '$interfaces';
 
-	const player: 'X' | 'O' = 'X';
+	let player: 'X' | 'O' = 'X';
+
+	const newGameState = () => {
+		return {
+			playerX: 'Player 1',
+			playerO: 'Player 2',
+			currentPlayer: 'X',
+			gameGrid: [
+				{
+					tileIndex: 1,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 0,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 6,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 2,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 3,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 4,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 5,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 7,
+					tileState: '',
+					isDisabled: false
+				},
+				{
+					tileIndex: 8,
+					tileState: '',
+					isDisabled: false
+				}
+			]
+		};
+	};
 
 	// mock GameState
-	let gameState: gameState = {
-		playerX: 'Player 1',
-		playerO: 'Player 2',
-		currentPlayer: 'X',
-		gameGrid: [
-			{
-				tileIndex: 1,
-				tileState: ''
-			},
-			{
-				tileIndex: 0,
-				tileState: ''
-			},
-			{
-				tileIndex: 6,
-				tileState: ''
-			},
-			{
-				tileIndex: 2,
-				tileState: ''
-			},
-			{
-				tileIndex: 3,
-				tileState: ''
-			},
-			{
-				tileIndex: 4,
-				tileState: ''
-			},
-			{
-				tileIndex: 5,
-				tileState: ''
-			},
-			{
-				tileIndex: 7,
-				tileState: ''
-			},
-			{
-				tileIndex: 8,
-				tileState: ''
-			}
-		]
-	};
+	let gameState: gameState = newGameState() as gameState;
 
 	const checkForWinner = () => {
 		const possibleWins = [
@@ -88,6 +102,7 @@
 	const buttonClick = (buttonIndex: number) => {
 		if (gameState.gameGrid[buttonIndex].tileState === '') {
 			gameState.gameGrid[buttonIndex].tileState = gameState.currentPlayer;
+			gameState.gameGrid[buttonIndex].isDisabled = true;
 			if (gameState.currentPlayer === 'X') {
 				gameState.currentPlayer = 'O';
 			} else {
@@ -96,41 +111,161 @@
 
 			const winner = checkForWinner();
 			if (winner !== undefined) {
+				disableAllButtons();
 				alert(`Winner is ${winner}`);
 			}
 		}
 	};
+
+	const newOfflineGame = () => {
+		player = 'X';
+		gameState = newGameState() as gameState;
+	};
+
+	const disableAllButtons = () => {
+		gameState.gameGrid.forEach((tile) => {
+			tile.isDisabled = true;
+		});
+	};
 </script>
 
-<div class="container">
-	<h2>Current Player: {gameState.currentPlayer}</h2>
-	<div class="gameContainer">
-		<!-- First row -->
-		{#each gameState.gameGrid as item, index}
-			<button class="gameGridButton" on:click={() => buttonClick(index)}>
-				{item.tileState}
-			</button>
-		{/each}
+<main class="Container">
+	<header class="Header">
+		<section class="HeaderText">Tic Tac Toe Offline</section>
+		<nav>
+			<button class="HeaderButton" on:click={() => newOfflineGame()}>New Offline Game</button>
+			<button class="HeaderButton" on:click={() => goto('/mainpage')}>Leave</button>
+		</nav>
+	</header>
+	<div class="ContentContainer">
+		<h2 class="TittleS">Current Player: {gameState.currentPlayer}</h2>
+		<div class="GameContainer">
+			{#each gameState.gameGrid as item, index}
+				<button
+					class="GameGridButton"
+					disabled={item.isDisabled}
+					on:click={() => buttonClick(index)}
+				>
+					{item.tileState}
+				</button>
+			{/each}
+		</div>
 	</div>
-</div>
+</main>
 
 <style>
-	.container {
+	@import url('https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700;900&display=swap');
+
+	:root {
+		--background-color1: #0d1c34;
+		--background-color2: #2a1d39;
+		--primary-color: #3498db;
+		--secondary-color: #ff5f56;
+		--header-color: #0d141f;
+	}
+
+	:global(body) {
+		font-family: 'Passion One', sans-serif;
+		margin: 0;
+		height: 100vh;
+		font-size: 62.5%;
+	}
+
+	.Container {
+		background: linear-gradient(180deg, var(--background-color1) 0%, var(--background-color2) 100%);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		height: 100vh;
 	}
 
-	.gameContainer {
+	.Header {
+		background-color: var(--header-color);
+		text-align: center;
+		height: 2rem;
+		width: 100%;
+		font-size: 1.5rem;
+		padding: 1rem 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.HeaderText {
+		color: var(--secondary-color);
+		font-size: 1.5rem;
+		padding: 0 1rem;
+	}
+
+	.HeaderButton {
+		background-color: var(--secondary-color);
+		color: var(--background-color1);
+
+		height: 2rem;
+		font-size: 1.1rem;
+		margin: 0 1rem;
+		padding: 0rem 1.5rem;
+		border: none;
+		border-radius: 0.3rem;
+
+		transition: 0.5s;
+		cursor: pointer;
+	}
+
+	.HeaderButton:hover {
+		background-color: var(--primary-color);
+	}
+
+	.ContentContainer {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		flex-grow: 1;
+		text-align: center;
+	}
+
+	.TittleS {
+		color: var(--primary-color);
+		font-size: 3rem;
+		margin: 0.5rem 0;
+	}
+
+	.GameContainer {
 		display: grid;
-		grid-template-columns: 100px 100px 100px;
-		grid-template-rows: 100px 100px 100px;
+		grid-template-columns: repeat(3, 1fr);
+		grid-gap: 10px;
+		margin-top: 20px;
 	}
 
-	.gameGridButton {
-		width: 100px;
-		height: 100px;
-		border: 1px solid black;
-		background-color: white;
+	.GameGridButton {
+		background-color: var(--primary-color);
+		color: var(--background-color1);
+		font-family: 'Passion One', sans-serif;
+
+		font-size: 4rem;
+		width: 6rem;
+		height: 6rem;
+		margin: 0;
+		padding: 1rem;
+		border: none;
+		border-radius: 0.5rem;
+		cursor: pointer;
+		transition:
+			background-color 0.5s,
+			color 0.5s,
+			transform 0.2s;
+	}
+
+	.GameGridButton:hover {
+		background-color: var(--secondary-color);
+		color: var(--background-color2);
+		transform: scale(1.15);
+	}
+
+	.GameGridButton:disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 </style>
