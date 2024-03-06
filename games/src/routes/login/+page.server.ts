@@ -23,7 +23,7 @@ export const actions: Actions = {
 				})
 			}
 
-			throw redirect(data.url)
+			goto(data.url);
 		}
     },
 }
