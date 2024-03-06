@@ -23,7 +23,7 @@ export const actions: Actions = {
 				})
 			}
 
-			throw redirect(303, data.url)
+			throw redirect(data.url)
 		}
     },
 }
