@@ -67,7 +67,7 @@ Das ist die Dokumentation unseres [Projekts](https://github.com/sanqro/games), w
 
 ## Einleitung
 
-Für dieses Projekt haben wir uns dafür entschieden, dass wir die, für uns neue, Technologie SvelteKit kennenlernen und dafür eine Webapplikation realisieren möchten. Dafür haben haben wir eine Webapplikation erstellt, mit der man seine Tippgeschwindigkeit testen kann und sich mit den anderen Benutzern messen kann. Ausserdem kann man auch seine vorherigen Testläufe ansehen und seine Tipperlebnis individualisieren.
+Wir wollen ein Spiel kreiren, bei dem man in echtzeit mit einem anderen Spieler online spielen kann. Für dieses Projekt haben wir uns dafür entschieden, dass wir die, für uns neue, Technologie SvelteKit kennenlernen und dafür eine Webapplikation realisieren möchten. Für das Echtzeitspiel wollen wir Supabase verwenden.
 
 ## Technologien
 
@@ -75,7 +75,7 @@ Für Games verwenden wir folgende Technologien:
 
 - [SveleteKit](https://kit.svelte.dev)
 - [TypeScript(tsx)](https://www.typescriptlang.org)
-- [TailwindCSS](https://tailwindcss.com/)
+- [Supabase](https://supabase.com/)
 - [ESLint](https://eslint.org)
 - [Prettier](https://prettier.io)
 - [Docusaurus](https://docusaurus.io/)
@@ -128,6 +128,9 @@ cd games/ #Falls man noch nicht im richtigen Verzeichnis ist
 npm i
 cd ..
 ```
+#### Supabase
+
+Damit man einen
 
 #### Projekt starten
 
